@@ -1,0 +1,26 @@
+{
+  "name": "ts-streak-counter",
+  "version": "1.0.0",
+  "description": "This is a basic streak counter - inspired by Duolingo - written in TypeScript and meant for the browser  (uses `localStorage`).",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mainick/streak-counter.git"
+  },
+  "keywords": [],
+  "author": "mainick",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mainick/streak-counter/issues"
+  },
+  "homepage": "https://github.com/mainick/streak-counter#readme",
+  "devDependencies": {
+    "@types/jest": "^29.2.2",
+    "jest": "^29.3.0",
+    "ts-jest": "^29.0.3",
+    "typescript": "^4.8.4"
+  }
+}

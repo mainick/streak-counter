@@ -1,0 +1,15 @@
+# Dependency directories
+node_modules
+jspm_packages
+
+# mac files
+.DS_Store
+
+# vim swap files
+*.swp
+
+# webstorm
+../.idea
+
+# compiled app
+dist
