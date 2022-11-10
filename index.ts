@@ -15,14 +15,22 @@ export function differenceInDays(dateLeft: Date, dateRight: Date): number {
   return differenceInDays
 }
 
-function shouldIncrementOrResetStreakCount(currentDate: Date, lastLoginDate: string): 'increment' | undefined {
+function shouldIncrementOrResetStreakCount(currentDate: Date, lastLoginDate: string): 'increment' | 'reset' | 'none' {
   let nextDate = new Date(lastLoginDate)
   nextDate.setHours(1, 0, 0, 0);
-  const difference = differenceInDays(currentDate, nextDate)
+  //const difference = differenceInDays(currentDate, nextDate)
+  const difference = currentDate.getDate() - parseInt(lastLoginDate.split("/")[1])
+  // Same-day login, do nothing
+  if (difference === 0) {
+    return 'none'
+  }
+  // This means they logged in the day after the currentDate
   if (difference === 1) {
     return 'increment'
   }
-  return undefined
+  // Otherwise they logged in after a day, which would
+  // break the streak
+  return 'reset'
 }
 
 export function streakCounter(storage: Storage, date: Date): Streak {
@@ -32,11 +40,22 @@ export function streakCounter(storage: Storage, date: Date): Streak {
       const streakSaved: Streak = JSON.parse(streakInLocalStorage || "")
       const state = shouldIncrementOrResetStreakCount(date, streakSaved.lastLoginDate)
       const SHOULD_INCREMENT = state === "increment"
+      const SHOULD_RESET = state === "reset"
 
       if (SHOULD_INCREMENT) {
         const updatedStreak: Streak = {
           ...streakSaved,
           currentCount: streakSaved.currentCount + 1,
+          lastLoginDate: formattedDate(date)
+        }
+        storage.setItem(KEY, JSON.stringify(updatedStreak))
+        return updatedStreak
+      }
+
+      if (SHOULD_RESET) {
+        const updatedStreak: Streak = {
+          currentCount: 1,
+          startDate: formattedDate(date),
           lastLoginDate: formattedDate(date)
         }
         storage.setItem(KEY, JSON.stringify(updatedStreak))
