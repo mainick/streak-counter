@@ -1,6 +1,6 @@
 import {JSDOM} from "jsdom"
-import {formattedDate} from "../utils"
-import {streakCounter} from "../index";
+import {formattedDate} from "../src/utils"
+import {streakCounter} from "../src";
 
 describe("with a pre-populated streak", () => {
   let mockLocalStorage: Storage;
