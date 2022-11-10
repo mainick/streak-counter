@@ -63,5 +63,16 @@ describe("with a pre-populated streak", () => {
     expect(streak.lastLoginDate).toBe(dateFormatted)
   })
 
+  it("save the increment streak to localStorage", () => {
+    const key = 'streak'
+    const today = new Date()
+    const dateFormatted = formattedDate(today)
+    streakCounter(mockLocalStorage, today)
+
+    const streakAsString = mockLocalStorage.getItem(key)
+    const streak = JSON.parse(streakAsString || "")
+
+    expect(streak.currentCount).toBe(2)
+  })
 
 })
