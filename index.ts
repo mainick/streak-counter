@@ -1,13 +1,4 @@
-import {formattedDate} from "./utils";
-
-interface Streak {
-  currentCount: number,
-  startDate: string,
-  lastLoginDate: string
-}
-
-// Used when storing in localStorage
-const KEY = 'streak'
+import {KEY, Streak, formattedDate, buildStreak, updateStreak} from "./utils";
 
 export function differenceInDays(dateLeft: Date, dateRight: Date): number {
   const diffTime = Math.abs(dateLeft.getTime() - dateRight.getTime())
@@ -37,28 +28,24 @@ export function streakCounter(storage: Storage, date: Date): Streak {
   const streakInLocalStorage = storage.getItem(KEY)
   if (streakInLocalStorage) {
     try {
-      const streakSaved: Streak = JSON.parse(streakInLocalStorage || "")
+      const streakSaved: Streak = JSON.parse(streakInLocalStorage) as Streak
       const state = shouldIncrementOrResetStreakCount(date, streakSaved.lastLoginDate)
       const SHOULD_INCREMENT = state === "increment"
       const SHOULD_RESET = state === "reset"
 
       if (SHOULD_INCREMENT) {
-        const updatedStreak: Streak = {
-          ...streakSaved,
+        const updatedStreak = buildStreak(date, {
           currentCount: streakSaved.currentCount + 1,
+          startDate: streakSaved.startDate,
           lastLoginDate: formattedDate(date)
-        }
-        storage.setItem(KEY, JSON.stringify(updatedStreak))
+        })
+        updateStreak(storage, updatedStreak)
         return updatedStreak
       }
 
       if (SHOULD_RESET) {
-        const updatedStreak: Streak = {
-          currentCount: 1,
-          startDate: formattedDate(date),
-          lastLoginDate: formattedDate(date)
-        }
-        storage.setItem(KEY, JSON.stringify(updatedStreak))
+        const updatedStreak = buildStreak(date)
+        updateStreak(storage, updatedStreak)
         return updatedStreak
       }
     }
@@ -67,12 +54,8 @@ export function streakCounter(storage: Storage, date: Date): Streak {
     }
   }
 
-  let streak: Streak = {
-    currentCount: 1,
-    startDate: formattedDate(date),
-    lastLoginDate: formattedDate(date)
-  }
-  storage.setItem(KEY, JSON.stringify(streak))
+  let streak: Streak = buildStreak(date)
+  updateStreak(storage, streak)
 
   return streak
 }
